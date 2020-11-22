@@ -3,8 +3,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     //-------------------------------------- Le jeu
     class Jeu{ // Declaration
-        constructor() {
+        constructor(_idSvg, _idPointage) {
             console.log("Jeu");
+
+            this.s = Snap(_idSvg);
+            this.sortiePointage = document.querySelector(_idPointage);
+            this.grandeurCarre = 20;
+            this.grandeurGrille = 15;
+        }
+
+        nouvellePartie(){
+
+        }
+
+        finPartie(){
+
+        }
+
+        affichagePointage(){
+            
         }
     }
 
@@ -22,6 +39,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
     }
 
-    var unePartie = new Jeu(); // Creation d'un objet avec une classe.
+    var unePartie = new Jeu("#jeu", "#pointage"); // Creation d'un objet avec une classe. --- #jeu == id pour le jeu -- APPELLE LE CONSTRUCTOR
 
 });
