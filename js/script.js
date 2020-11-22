@@ -40,18 +40,61 @@ document.addEventListener("DOMContentLoaded", function(event) {
             console.log("Serpent");
 
             this.leJeu = _leJeu;
+
+            this.currentX = -1;
+            this.currentY = 0;
+
+            this.nextMoveX = 1;
+            this.nextMoveY = 0;
+
+            this.serpentLongueur = 1;
+            this.tblCarreSerpent = [];
+
+            this.vitesse = 250;
+            this.timing = setInterval(this.controleSerpent.bind(this), 250);
+
+
+            document.addEventListener("keydown", this.verifTouche.bind(this)); // bind == prend le contexte de this(serpent) et non document
         }
 
-        verifTouche(evt) { //------ Ecouteur de touches
+        verifTouche(_evt) { //------ Ecouteur de touches
+            var evt = _evt;
 
+            //console.log(evt.keyCode); // Code de la touche enfoncee.
+            this.deplacement(evt.keyCode);
         }
 
         deplacement(dirCode) {
 
+            switch(dirCode){
+                case 37:
+                    this.nextMoveX = -1;
+                    this.nextMoveY = 0;
+                    break;
+                case 38:
+                    this.nextMoveX = 0;
+                    this.nextMoveY = -1;
+                    break;
+                case 39:
+                    this.nextMoveX = 1;
+                    this.nextMoveY = 0;
+                    break;
+                case 40:
+                    this.nextMoveX = 0;
+                    this.nextMoveY = 1;
+                    break;
+            }
+
+            //console.log(this.nextMoveX, this.nextMoveY);
         }
 
         controleSerpent() {
+            var nextX = this.currentX + this.nextMoveX;
+            var nextY = this.currentY + this.nextMoveY;
 
+            this.dessineCarre(nextX, nextY);
+            this.currentX = nextX;
+            this.currentY = nextY;
         }
 
         dessineCarre(x, y) {
