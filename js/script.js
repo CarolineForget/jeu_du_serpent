@@ -15,12 +15,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         nouvellePartie(){ //------- Cree les objets sur la scene.
 
+            this.finPartie();
             this.affichagePointage(1);
-            this.pomme = new Pomme();
-            this.serpent = new Serpent();
+            this.pomme = new Pomme(this);
+            this.serpent = new Serpent(this);
         }
 
         finPartie(){
+            if(this.pomme !== undefined) {
+                this.pomme.supprimePomme();
+                this.pomme = undefined; // Libere la memoire de la pomme precedente.
+            }
 
         }
 
@@ -31,16 +36,56 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     //-------------------------------------- Le serpent
     class Serpent{
-        constructor() {
+        constructor(_leJeu) {
             console.log("Serpent");
+
+            this.leJeu = _leJeu;
+        }
+
+        verifTouche(evt) { //------ Ecouteur de touches
+
+        }
+
+        deplacement(dirCode) {
+
+        }
+
+        controleSerpent() {
+
+        }
+
+        dessineCarre(x, y) {
+
+        }
+
+        supprimeSerpent() {
+
         }
     }
 
     //-------------------------------------- La pomme
     class Pomme{
-        constructor() {
+        constructor(_leJeu) {
             console.log("Pomme");
+
+            this.leJeu = _leJeu;
+            this.pomme = [];
+            this.ajoutePomme();
         }
+
+        ajoutePomme(){
+            var posX = Math.floor(Math.random() * this.leJeu.grandeurGrille);
+            var posY = Math.floor(Math.random() * this.leJeu.grandeurGrille);
+
+            this.pomme = [this.leJeu.s.rect(posX * this.leJeu.grandeurCarre, posY * this.leJeu.grandeurCarre, this.leJeu.grandeurCarre, this.leJeu.grandeurCarre).attr({fill: "red"}), posX, posY]; // Cree rectangle + modifie l'attribut.
+
+
+        }
+
+        supprimePomme(){
+            this.pomme[0].remove();
+        }
+
     }
 
     var unePartie = new Jeu("#jeu", "#pointage"); // Creation d'un objet avec une classe. (le jeu) --- #jeu == id pour le jeu -- APPELLE LE CONSTRUCTOR DE LA CLASSE JEU
