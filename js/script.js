@@ -27,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 this.pomme = undefined; // Libere la memoire de la pomme precedente.
             }
 
+            if(this.serpent !== undefined) {
+                this.serpent.supprimeSerpent();
+                this.serpent = undefined;
+            }
         }
 
         affichagePointage(_lePointage){
@@ -49,9 +53,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             this.serpentLongueur = 1;
             this.tblCarreSerpent = [];
+            this.touche = false;
 
             this.vitesse = 250;
-            this.timing = setInterval(this.controleSerpent.bind(this), 250);
+            this.timing = setInterval(this.controleSerpent.bind(this), this.vitesse);
 
 
             document.addEventListener("keydown", this.verifTouche.bind(this)); // bind == prend le contexte de this(serpent) et non document
@@ -92,17 +97,57 @@ document.addEventListener("DOMContentLoaded", function(event) {
             var nextX = this.currentX + this.nextMoveX;
             var nextY = this.currentY + this.nextMoveY;
 
-            this.dessineCarre(nextX, nextY);
-            this.currentX = nextX;
-            this.currentY = nextY;
+            this.tblCarreSerpent.forEach(function(element) {
+                if(nextX === element[1] && nextY === element[2]){
+                    //console.log("touche moi-meme");
+                    this.leJeu.finPartie();
+                    this.touche = true;
+                }
+            }.bind(this));
+
+
+            if(nextY < 0 || nextX < 0 || nextY > this.leJeu.grandeurGrille || nextX > this.leJeu.grandeurGrille) {
+                //console.log("touche limite");
+                this.leJeu.finPartie();
+                this.touche = true;
+            }
+
+            if(!this.touche) {
+                if(this.currentX === this.leJeu.pomme.pomme[1] && this.currentY === this.leJeu.pomme.pomme[2]) {
+                    this.serpentLongueur ++;
+                    this.leJeu.affichagePointage(this.serpentLongueur);
+
+                    this.leJeu.pomme.supprimePomme();
+                    this.leJeu.pomme.ajoutePomme();
+                }
+
+
+                this.dessineCarre(nextX, nextY);
+                this.currentX = nextX;
+                this.currentY = nextY;
+            }
         }
 
         dessineCarre(x, y) {
+            var unCarre = [this.leJeu.s.rect(x * this.leJeu.grandeurCarre, y * this.leJeu.grandeurCarre, this.leJeu.grandeurCarre, this.leJeu.grandeurCarre), x, y];
+
+            this.tblCarreSerpent.push(unCarre); // Ajoute a la fin.
+
+            if(this.tblCarreSerpent.length > this.serpentLongueur) {
+                this.tblCarreSerpent[0][0].remove();
+                this.tblCarreSerpent.shift(); // Enleve l'element 0.
+            }
+
 
         }
 
         supprimeSerpent() {
+            clearInterval(this.timing);
 
+            while (this.tblCarreSerpent.length > 0) {
+                this.tblCarreSerpent[0][0].remove();
+                this.tblCarreSerpent.shift();
+            }
         }
     }
 
